@@ -26,7 +26,10 @@ export function getAllPosts(): Post[] {
             return {
                 slug,
                 content,
-                ...(data as { title: string; date: string; description: string; tags?: string[] }),
+                title: data.title || 'Untitled Post',
+                date: data.date ? String(data.date) : '1970-01-01',
+                description: data.description || 'No description available.',
+                tags: data.tags || [],
                 url: `/blog/${slug}`,
             }
         })
@@ -46,7 +49,10 @@ export function getPostBySlug(slug: string): Post | null {
         return {
             slug,
             content,
-            ...(data as { title: string; date: string; description: string; tags?: string[] }),
+            title: data.title || 'Untitled Post',
+            date: data.date ? String(data.date) : '1970-01-01',
+            description: data.description || 'No description available.',
+            tags: data.tags || [],
             url: `/blog/${slug}`,
         }
     } catch (e) {

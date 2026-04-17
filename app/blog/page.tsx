@@ -22,7 +22,15 @@ export default function BlogPage() {
                             </h2>
                         </Link>
                         <time className="text-sm text-neutral-500 mb-3 block">
-                            {format(new Date(post.date), 'MMMM dd, yyyy')}
+                            {(() => {
+                                try {
+                                    const date = new Date(post.date)
+                                    if (isNaN(date.getTime())) return 'No date provided'
+                                    return format(date, 'MMMM dd, yyyy')
+                                } catch (e) {
+                                    return 'Invalid date'
+                                }
+                            })()}
                         </time>
                         <p className="text-neutral-700 dark:text-neutral-300 mb-4">
                             {post.description}
