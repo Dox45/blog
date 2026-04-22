@@ -50,3 +50,65 @@ body {
   margin-bottom: 1em;
   line-height: 1.3333333;
 }
+
+/* MDX content improvements: code blocks and tables */
+
+/* Code blocks */
+.prose pre {
+  background: rgba(0,0,0,0.04);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", "Oxygen Mono", monospace;
+  color: inherit;
+}
+
+.dark .prose pre {
+  background: rgba(255,255,255,0.04);
+}
+
+/* Inline code */
+.prose code {
+  background: rgba(27,31,35,0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.3rem;
+  font-size: 0.95em;
+}
+
+.dark .prose code {
+  background: rgba(255,255,255,0.03);
+}
+
+/* Tables */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: auto;
+}
+.prose th,
+.prose td {
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.dark .prose th,
+.dark .prose td {
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Improve code block font size */
+.prose pre code {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  white-space: pre;
+  display: block;
+}
+
+/* Make tables responsive on small screens */
+.prose .table-wrapper {
+  overflow-x: auto;
+}
+
+.prose table {
+  display: table;
+}

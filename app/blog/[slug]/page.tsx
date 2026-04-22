@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
+import rehypeHighlight from 'rehype-highlight'
 import 'katex/dist/katex.min.css'
 
 export const generateStaticParams = async () => getAllPosts().map((post: Post) => ({ slug: post.slug }))
@@ -45,6 +46,7 @@ export default async function PostLayout({ params }: { params: Promise<{ slug: s
                         mdxOptions: {
                             remarkPlugins: [remarkMath],
                             rehypePlugins: [
+                                rehypeHighlight,
                                 [rehypeKatex, {
                                     strict: false,
                                     trust: true,

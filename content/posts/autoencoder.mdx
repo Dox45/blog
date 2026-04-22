@@ -1,0 +1,331 @@
+---
+title: "Autoencoders and Representation Learning in Vision"
+date: 2026-04-22
+description: "Autoencoders are a type of neural network that compress data into a lower-dimensional space and then reconstruct the original input from that compressed representation."
+tags: ["Machine Learning", "Computer Vision", "Mathematics", "Medical Imaging"]
+---
+
+**By Chima Emmanuel**
+
+Autoencoders are a type of neural network that compress data into a lower-dimensional space and then reconstruct the original input from that compressed representation.
+
+If you've ever encountered Principal Component Analysis (PCA), then you already have an intuition for how this works. The key difference is that PCA is a linear projection method, while autoencoders use neural networks, allowing them to learn non-linear structure in the data.
+
+In theory, a linear autoencoder with a single hidden layer behaves similarly to PCA in 1-D. But once we introduce depth and non-linearity, the model begins to learn richer representations that go far beyond linear subspaces.
+
+---
+
+## **How does the Autoencoder work?**
+
+The Autoencoder follows a two-stage component design.
+
+### 1. The Encoder
+
+The encoder is the first component of the autoencoder. It compresses the input data by projecting it into a lower-dimensional latent space. The objective is to extract the most informative features required to represent the original data efficiently, while discarding redundancy and noise.
+
+
+Formally:
+$$
+z = f_{\theta}(x)
+$$
+
+Where:
+- $x$ = input data  
+- $f_{\theta}$ = encoder network (parameterized by $\theta$)  
+- $z$ = latent representation  
+
+This is analogous to PCA in the linear case, where the model projects data onto principal components. However, unlike PCA, the encoder learns non-linear representations.
+
+### 2. The Decoder
+
+The decoder is the second component of the autoencoder. It reconstructs the original input from the compressed latent representation.
+
+$$
+\hat{x} = g_{\phi}(z)
+$$
+
+Where:
+- $g_{\phi}$ = decoder network  
+- $\hat{x}$ = reconstructed output  
+
+The full pipeline becomes:
+$$
+\hat{x} = g_{\phi}(f_{\theta}(x))
+$$
+
+The goal of the autoencoder is to minimize the reconstruction error:
+$$
+\mathcal{L} = \| x - \hat{x} \|_2^2
+$$
+
+So the model is explicitly trained to preserve information needed for reconstruction while discarding everything else.
+
+---
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class TinyAE(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.enc = nn.Sequential(
+            nn.Linear(784, 256),
+            nn.ReLU(),
+            nn.Linear(256, 64)
+        )
+        self.dec = nn.Sequential(
+            nn.Linear(64, 256),
+            nn.ReLU(),
+            nn.Linear(256, 784),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        z = self.enc(x)
+        return self.dec(z)
+
+model = TinyAE()
+opt = torch.optim.Adam(model.parameters(), 1e-3)
+
+for step in range(500):
+    x = torch.rand(16, 784)
+    recon = model(x)
+    loss = F.mse_loss(recon, x)
+
+    opt.zero_grad()
+    loss.backward()
+    opt.step()
+
+    if step % 100 == 0:
+        print(f"Step {step}: Loss {loss.item():.4f}")
+```
+
+
+---
+
+## What is Representation Learning?
+
+Oftentimes in computer vision, we want to know what kind of internal structure a model learns about the world when it is forced to predict missing information. This type of task is called representation learning. To answer this question, Engineers use different types of self-supervised learning techniques. The different types of answers determine whether a model learns textures, true semantics or local continuity. This is important especially for fields like medical imaging where meaning is not encoded in pixels but in 3D configurations of the anatomy of animal bodies
+
+At a technical level, representation learning asks:
+> What structure does the latent space ($z$) actually encode about the input?
+
+Formally:
+$$
+z = f_\theta(x)
+$$
+
+We want ($z$) to:
+* -Discard noise
+* -Preserve semantic structure
+* -Generalize to downstream tasks (segmentation, detection, classification)
+
+## Three Levels of Reconstruction Difficulty
+
+### 1. Naive reconstruction (identity learning)
+Here, the model reconstructs the full input to output. If nothing is removed from the input, and only compression takes place, can the model reconstruct the full output with minimal error? This is the trivial case of representation learning called compresion of identity.
+
+$$
+f_\theta(x) \approx x
+$$
+
+The typical behaviour to expect is simple. The model learns an identity mapping and memorizes the relationships between different pixels. It does not learn any abstraction.
+This is not exactly representation learning. It is compression without constraint.
+
+
+### 2. Random masking (weak structure learning)
+In Random masking, we remove independent pixels from the image data and ask the model to rebuild the image with those missing pixels intact. This forces interpolation, allowing the model to substitute the values using the neighboring pixel data. This allows the model to learn local texture, smoothing and short-range continuity.
+
+$$
+x_{masked} = x \odot m, \quad m \sim \text{Bernoulli}(p)
+$$
+
+The idea is that each pixel is removed independently. This allows the model to use local interpolation to predict or fill-in missing pixel values, enabling texture continuity and short-range correlation. It has limitations. Because missingness is unstructured, the model can rely on:
+
+* -nearby pixels
+* -local gradients
+* -smoothing priors
+
+So it never needs global reasoning.
+
+### 3. Block masking (structural reasoning)
+Block masking changes the game entirely by removing entire regions instead of points or pixels. The model is then forced to reproduce a missing space from incomplete data. This type of masking is very relevant in medical imaging like CT where pathology is region based and not pixel based.
+
+```python
+def block_mask(x, patch=8, ratio=0.5):
+    B, C, H, W = x.shape
+    mask = torch.zeros_like(x)
+
+    for i in range(0, H, patch):
+        for j in range(0, W, patch):
+            if torch.rand(1) < ratio:
+                mask[:, :, i:i+patch, j:j+patch] = 1
+
+    return x * (1 - mask), mask
+```
+
+The key idea is to remove entire regions. This forces the model to learn about the structure of the objects in a high level. It also allows spatial coherence and global context inference.
+This is especially important in CT imaging where:
+
+* -organs are contiguous 3D structures
+* -pathology spans regions, not pixels
+
+
+In our case, the block masking problem is central to this question. To address it, two major families of autoencoders are used:
+
+1. Masked Autoencoder (MAE)
+2. Denoising Autoencoder (DAE)
+
+
+## Denoising vs. Masked Autoencoders
+
+### 1. Denoising Autoencoder (DAE)
+The DAE solves this problem by first corrupting the inputs via noise (gaussian white nosie). This means that every pixel is slightly corrupted yet structure is still visible. The issue with our DAE is that it can eaily remove the noise and leave everything unchanged meaning that it didn't really learn to reconstruct the missing parts. It just acted like a complex filter rather than a structure learner.
+
+$$
+x_{noisy} = x + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \sigma^2)
+$$
+
+### What this means
+
+Every pixel is slightly perturbed, but the overall structure of the image remains fully visible. The model then learns to remove noise and recover the original signal. The limitations of this is structural. Because structure is preserved, the model works by smoothing local variations and averaging out noise. 
+
+So instead of learning structure, it often behaves like a learned denoising filter.
+
+In other words:
+
+> It learns *how to clean*, not *how to understand*.
+
+
+### 2. Masked Autoencoder (MAE)
+The masked autoencoder works by removing information entirely in a process called masking. This implies that large parts of the inputs are completly missing and reconstruction is performed from sparse context.
+The Masked Autoencoder removes information completely using a binary mask:
+
+$$
+x_{masked} = x \odot (1 - m), \quad m \in \{0,1\}^p
+$$
+
+### What this means
+
+Large portions of the input are entirely removed (they are set to zero or omitted).
+
+Unlike DAE,there is no noisy signal and certainly no hint of missing values. The model must then infer missing regions from context alone.
+
+The major objective of the model si to reconstruct missing structure using only partial observations. This forces the model to use global reasoning and structural inference encouraging long-range dependency learning.
+
+## Block Masking as the Key Middle Ground
+
+Block masking is a structured version of MAE-style corruption where contiguous regions are removed instead of random pixels.
+
+A simple implementation looks like this:
+
+```python
+def block_mask(x, patch=8, ratio=0.5):
+    B, C, H, W = x.shape
+    mask = torch.zeros_like(x)
+
+    for i in range(0, H, patch):
+        for j in range(0, W, patch):
+            if torch.rand(1) < ratio:
+                mask[:, :, i:i+patch, j:j+patch] = 1
+
+    return x * (1 - mask), mask
+```
+
+### Why this matters
+
+Block masking forces the model to reconstruct missing *regions*, not pixels, infer object-level structure and rely on global context
+
+
+## Why MAE beats Denoising Autoencoders
+
+### Denoising Autoencoder (DAE)
+
+DAEs corrupt inputs with noise:
+
+
+$$
+x_{noisy} = x + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \sigma^2)
+$$
+
+
+> “remove noise but keep everything else unchanged”
+
+So it behaves like a sophisticated smoothing filter.
+
+
+
+### Masked Autoencoder (MAE)
+
+MAE removes information entirely:
+
+
+$$
+x_{masked} = x \odot (1 - m), \quad m \in {0,1}^p
+$$
+
+
+This brings about true representation learning.
+
+
+
+<h2>Summary Table</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>DAE</th>
+      <th>MAE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Corruption</td><td>noise</td><td>missing regions</td></tr>
+    <tr><td>Visibility</td><td>full structure</td><td>partial structure</td></tr>
+    <tr><td>Learning signal</td><td>weak</td><td>strong</td></tr>
+    <tr><td>Shortcut learning</td><td>easy</td><td>hard</td></tr>
+    <tr><td>Representation</td><td>local</td><td>global</td></tr>
+  </tbody>
+</table>
+
+## When MAE Fails
+
+Despite its strength, MAE is not universally optimal.
+
+### 1. Over-masking collapse
+
+If mask ratio is too high the model sees too little context and reconstruction becomes ambiguous. This makes training signals to becomes noisy.
+
+
+
+### 2. Low-resolution or small objects
+
+If the object is small relative to mask blocks, the entire object may be removed and reconstruction becomes guesswork
+
+This is common in lesion detection and micro-structures in CT.
+
+
+
+### 3. Distribution shift sensitivity
+
+MAE learns strong priors about structure.
+
+If test data differs significantly, the learned priors can mislead reconstruction and the model may hallucinate incorrect structure
+
+
+### 4. Compute inefficiency (3D case)
+
+In volumetric data, decoder cost scales with full reconstruction space and memory usage becomes a bottleneck
+
+This is why many 3D MAE systems require:
+
+* patch-based decoding
+* latent-space reconstruction
+* or hybrid CNN-transformer designs
+
+
+## **Conclusion**
+
+Representation learning is not about reconstruction alone; it is about designing the right information bottleneck. While DAEs focus on cleaning noise, MAEs focus on understanding structure, making them the superior choice for complex tasks in vision and medical imaging.
