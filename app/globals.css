@@ -3,112 +3,202 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #09090b;
+  --card-bg: #f4f4f5;
+  --card-border: #e4e4e7;
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #e4e4e7;
+  --accent: #000000;
+  --muted: #71717a;
+  --hover-bg: #f4f4f5;
+}
+
+.dark {
+  --background: #050505;
+  --foreground: #fafafa;
+  --card-bg: #121212;
+  --card-border: rgba(255, 255, 255, 0.12);
+  --sidebar-bg: #0a0a0a;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --accent: #ffffff;
+  --muted: #a1a1aa;
+  --hover-bg: rgba(255, 255, 255, 0.05);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Add to your globals.css */
-.prose h2 {
-  font-size: 1.5em;
+/* Custom monochrome scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(161, 161, 170, 0.6);
+}
+
+/* Minimalist Glassmorphic Panels & Cards */
+.glass-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Typography & MDX Prose - High-contrast Monochrome */
+.prose {
+  color: var(--foreground);
+  max-width: none;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: var(--foreground);
   font-weight: 700;
-  margin-top: 2em;
-  margin-bottom: 1em;
-  line-height: 1.3333333;
-}
-
-.prose h3 {
-  font-size: 1.25em;
-  font-weight: 600;
-  margin-top: 1.6em;
-  margin-bottom: 0.6em;
-  line-height: 1.6;
+  letter-spacing: -0.025em;
+  scroll-margin-top: 5rem;
 }
 
 .prose h1 {
-  font-size: 2em;
-  font-weight: 800;
-  margin-top: 2em;
-  margin-bottom: 1em;
-  line-height: 1.3333333;
+  font-size: 2.25rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.2;
 }
 
-/* MDX content improvements: code blocks and tables */
+.prose h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--card-border);
+  line-height: 1.3;
+}
 
-/* Code blocks */
+.prose h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.prose p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+  color: var(--foreground);
+  opacity: 0.9;
+}
+
+.prose a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.prose a:hover {
+  opacity: 0.7;
+}
+
+.prose blockquote {
+  border-left: 2px solid var(--foreground);
+  padding-left: 1rem;
+  font-style: italic;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+  background: var(--hover-bg);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose li {
+  margin-top: 0.375rem;
+  margin-bottom: 0.375rem;
+}
+
+/* Code & Syntax Highlighting - Monochrome */
 .prose pre {
-  background: rgba(0,0,0,0.04);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  overflow: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", "Oxygen Mono", monospace;
-  color: inherit;
-}
-
-.dark .prose pre {
-  background: rgba(255,255,255,0.04);
-}
-
-/* Inline code */
-.prose code {
-  background: rgba(27,31,35,0.05);
-  padding: 0.2rem 0.4rem;
-  border-radius: 0.3rem;
-  font-size: 0.95em;
-}
-
-.dark .prose code {
-  background: rgba(255,255,255,0.03);
-}
-
-/* Tables */
-.prose table {
-  width: 100%;
-  border-collapse: collapse;
-  overflow: auto;
-}
-.prose th,
-.prose td {
-  border: 1px solid rgba(0,0,0,0.08);
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-}
-.dark .prose th,
-.dark .prose td {
-  border: 1px solid rgba(255,255,255,0.06);
-}
-
-/* Improve code block font size */
-.prose pre code {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  white-space: pre;
-  display: block;
-}
-
-/* Make tables responsive on small screens */
-.prose .table-wrapper {
+  background: #000000 !important;
+  color: #fafafa !important;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
   overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.prose table {
-  display: table;
+.prose code:not(pre code) {
+  background: var(--hover-bg);
+  color: var(--foreground);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  font-size: 0.875em;
+  font-family: var(--font-mono);
+  border: 1px solid var(--card-border);
+}
+
+/* KaTeX equations - Monochrome */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1rem 0;
+  margin: 1.5rem 0 !important;
+  background: var(--hover-bg);
+  border-radius: 0.5rem;
+  border: 1px solid var(--card-border);
+  text-align: center;
 }
