@@ -21,8 +21,9 @@ export default function Home() {
 
         <div className="space-y-4 text-base leading-relaxed text-[var(--foreground)] opacity-90">
           <p>
-            Hi, I&apos;m Chima. I train models, mostly speech and language models, and mostly for the languages
-            people in Nigeria actually speak, which tend to get left out of the big labs&apos; datasets.
+            Hi, I&apos;m Chima. I train models and dabble between computer vision, speech and computational
+            biology. On the speech side, I mostly work on the languages people in Nigeria actually speak, which tend
+            to get left out of the big labs&apos; datasets.
           </p>
           <p>
             I run <a href="https://modularcomputing.cloud" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:opacity-70">Modular</a>,
@@ -34,7 +35,7 @@ export default function Home() {
             experiments and honest about results.
           </p>
           <p>
-            I&apos;m also a Software Engineering student at FUTO, and I contribute to open-source ML infrastructure,
+            I do SWE at Federal University of Technology Owerri, and I contribute to open-source ML infrastructure,
             most recently PyTorch&apos;s ExecuTorch.
           </p>
           <p>
@@ -59,7 +60,7 @@ export default function Home() {
         <ul className="space-y-2 text-sm leading-relaxed text-[var(--foreground)] opacity-90 list-disc pl-5">
           <li>
             Released <a href="https://huggingface.co/Modularcomputing/dynamic-asr" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:opacity-70">Dynamic ASR</a>,
-            speech recognition for Nigerian code-switched speech, fine-tuned from Meta&apos;s Omnilingual ASR on 187 hours of licensed audio.
+            speech recognition for Nigerian code-switched speech, fine-tuned from Meta&apos;s Omnilingual ASR.
           </li>
           <li>
             Released <a href="https://huggingface.co/Modularcomputing/dynamic-accent-preview" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:opacity-70">Dynamic Accent</a>,
