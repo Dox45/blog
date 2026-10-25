@@ -15,17 +15,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Chima Labs · Signal Processing & Neural Geometry",
-    template: "%s · Chima Labs"
+    default: "Chima Emmanuel · ML Research & Open Models",
+    template: "%s · Chima Emmanuel"
   },
-  description: "Personal website & computational research lab of Chima Emmanuel. Signal processing, Lagrangian optimization, autoencoders, and neural geometry.",
+  description: "Personal website of Chima Emmanuel, founder of Modular: ML research, open models, publications, and articles.",
   keywords: ["Signal Processing", "Machine Learning", "Neural Networks", "Optimization", "Lagrangian Geometry", "Autoencoders", "Chima Emmanuel"],
   authors: [{ name: "Chima Emmanuel" }],
   openGraph: {
-    title: "Chima Labs · Signal Processing & AI Research",
+    title: "Chima Emmanuel · ML Research & Open Models",
     description: "Computational research, publications, software tools, and articles by Chima Emmanuel.",
-    url: "https://chimalabs.org",
-    siteName: "Chima Labs",
+    url: "https://chimaemmanuel.xyz",
+    siteName: "Chima Emmanuel",
     locale: "en_US",
     type: "website",
   },

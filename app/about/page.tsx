@@ -65,9 +65,8 @@ export default function AboutPage() {
           , with model cards that state what works, what does not, and what each model was allowed to learn from.
         </p>
         <p className="text-sm leading-relaxed text-[var(--foreground)] opacity-90">
-          Alongside Modular, I&apos;m Lead AI Engineer at Phace LLC (AnomalyForex), co-founder of Llava, an AI operating
-          system for lawyers, and of Forecast, a Nigerian prediction market, and a software engineering intern at Squad by
-          HabariPay (GTCO). I study Software Engineering at the Federal University of Technology Owerri, and I contribute to
+          Alongside Modular, I&apos;m Lead AI Engineer at Phace LLC (AnomalyForex) and co-founder of Llava, an AI operating
+          system for lawyers, and of Forecast, a Nigerian prediction market. I study Software Engineering at the Federal University of Technology Owerri, and I contribute to
           open-source ML infrastructure, most recently PyTorch&apos;s ExecuTorch.
         </p>
         <p className="text-sm leading-relaxed text-[var(--foreground)] opacity-90">
