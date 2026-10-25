@@ -13,7 +13,8 @@ import {
   ChevronRightIcon,
   SunIcon,
   MoonIcon,
-  CloseIcon
+  CloseIcon,
+  PaperIcon
 } from './Icons'
 
 interface SidebarProps {
@@ -35,6 +36,7 @@ export default function Sidebar({
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     general: true,
+    research: true,
     writings: true
   })
 
@@ -147,6 +149,47 @@ export default function Sidebar({
             )}
           </div>
 
+          {/* Research */}
+          <div>
+            <button
+              onClick={() => toggleSection('research')}
+              className="w-full flex items-center justify-between px-2 py-1.5 text-[var(--muted)] uppercase tracking-wider font-bold text-[10px] hover:text-[var(--foreground)]"
+            >
+              <span className="flex items-center gap-1.5">
+                <PaperIcon className="w-3.5 h-3.5 text-[var(--foreground)]" />
+                Research
+              </span>
+              {openSections.research ? <ChevronDownIcon className="w-3 h-3" /> : <ChevronRightIcon className="w-3 h-3" />}
+            </button>
+
+            {openSections.research && (
+              <div className="mt-1 space-y-0.5 pl-2">
+                <Link
+                  href="/publications"
+                  onClick={onClose}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-colors ${
+                    isActive('/publications')
+                      ? 'bg-[var(--hover-bg)] text-[var(--foreground)] font-bold border-l-2 border-[var(--foreground)]'
+                      : 'text-[var(--foreground)] opacity-70 hover:opacity-100 hover:bg-[var(--hover-bg)]'
+                  }`}
+                >
+                  <span>Publications</span>
+                </Link>
+                <Link
+                  href="/projects"
+                  onClick={onClose}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md transition-colors ${
+                    isActive('/projects')
+                      ? 'bg-[var(--hover-bg)] text-[var(--foreground)] font-bold border-l-2 border-[var(--foreground)]'
+                      : 'text-[var(--foreground)] opacity-70 hover:opacity-100 hover:bg-[var(--hover-bg)]'
+                  }`}
+                >
+                  <span>Open Models & Projects</span>
+                </Link>
+              </div>
+            )}
+          </div>
+
           {/* Writings & Articles */}
           <div>
             <button
@@ -218,6 +261,15 @@ export default function Sidebar({
               >
                 <GitHubIcon className="w-4 h-4 text-[var(--foreground)]" />
                 <span>GitHub (Dox45)</span>
+              </a>
+              <a
+                href="https://huggingface.co/Modularcomputing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--hover-bg)] transition-colors"
+              >
+                <span className="w-4 h-4 flex items-center justify-center text-[13px] leading-none">🤗</span>
+                <span>Hugging Face (Modular)</span>
               </a>
               <a
                 href="https://x.com/purple_wavelet"

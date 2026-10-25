@@ -24,6 +24,8 @@ export default function Header({
     if (pathname === '/') return 'Overview'
     if (pathname === '/about') return 'About & Bio'
     if (pathname === '/blog') return 'Articles'
+    if (pathname === '/publications') return 'Publications'
+    if (pathname === '/projects') return 'Open Models & Projects'
     if (pathname.startsWith('/blog/')) {
       const slug = pathname.replace('/blog/', '')
       return `Article: ${slug}`
