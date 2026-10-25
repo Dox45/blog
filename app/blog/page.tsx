@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { getAllPosts, Post } from '../../lib/mdx'
+import { externalPosts } from '../../lib/external'
 import { BookIcon, ChevronRightIcon } from '../components/Icons'
 
 export const metadata = {
@@ -28,6 +29,53 @@ export default function BlogPage() {
 
       {/* Articles List */}
       <div className="space-y-4">
+        {externalPosts.map((post) => (
+          <a
+            key={post.url}
+            href={post.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-6 rounded-2xl glass-card block group space-y-3 border border-[var(--card-border)]"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted)]">
+              <span className="flex items-center gap-2">
+                <time className="font-mono">{post.date}</time>
+                <span className="font-mono px-2 py-0.5 rounded-md bg-foreground text-background font-semibold">
+                  {post.source}
+                </span>
+              </span>
+              <span className="font-mono px-2.5 py-0.5 rounded-md bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 font-semibold border border-neutral-300 dark:border-neutral-700">
+                {post.readingTime}
+              </span>
+            </div>
+
+            <h2 className="text-xl font-bold text-[var(--foreground)] group-hover:opacity-80 transition-opacity leading-snug">
+              {post.title}
+            </h2>
+
+            <p className="text-xs text-[var(--muted)] leading-relaxed line-clamp-3">
+              {post.description}
+            </p>
+
+            <div className="flex items-center justify-between pt-2 border-t border-[var(--card-border)]">
+              <div className="flex flex-wrap gap-1.5">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[10px] px-2 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-mono"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+              <span className="text-xs font-semibold text-[var(--foreground)] group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                <span>Read on {post.source}</span>
+                <ChevronRightIcon className="w-3.5 h-3.5" />
+              </span>
+            </div>
+          </a>
+        ))}
+
         {posts.map((post: Post) => (
           <Link
             key={post.slug}
