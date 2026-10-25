@@ -280,6 +280,15 @@ export default function Sidebar({
                 <XTwitterIcon className="w-4 h-4 text-[var(--foreground)]" />
                 <span>X / Twitter</span>
               </a>
+              <a
+                href="https://www.linkedin.com/in/chima-emmanuel-045794271"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--hover-bg)] transition-colors"
+              >
+                <span className="w-4 h-4 flex items-center justify-center text-[10px] font-bold text-[var(--foreground)]">in</span>
+                <span>LinkedIn</span>
+              </a>
             </div>
           </div>
         </nav>
